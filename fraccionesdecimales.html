@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Fracciones</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .fraction {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+
+        .options button {
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .options button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        button#new-game {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button#new-game:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Juego de Fracciones</h1>
+        <div id="question" class="fraction"></div>
+        <div id="options" class="options">
+            <!-- Opciones generadas dinámicamente -->
+        </div>
+        <button id="new-game">Generar Nueva Fracción</button>
+        <p id="result" class="result"></p>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const questionDiv = document.getElementById("question");
+            const optionsDiv = document.getElementById("options");
+            const resultText = document.getElementById("result");
+            const newGameButton = document.getElementById("new-game");
+
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            function generateFraction() {
+                const numerator = getRandomInt(1, 10);
+                const denominator = getRandomInt(2, 10);
+                return { numerator, denominator, value: numerator / denominator };
+            }
+
+            function generateOptions(correctValue) {
+                const options = [correctValue];
+                while (options.length < 3) {
+                    const randomOption = parseFloat((correctValue + (Math.random() * 2 - 1)).toFixed(2));
+                    if (!options.includes(randomOption)) {
+                        options.push(randomOption);
+                    }
+                }
+                return options.sort(() => Math.random() - 0.5); // Mezclar las opciones
+            }
+
+            function startGame() {
+                resultText.textContent = "";
+                const fraction = generateFraction();
+                questionDiv.textContent = `${fraction.numerator} / ${fraction.denominator}`;
+
+                const options = generateOptions(fraction.value);
+                optionsDiv.innerHTML = "";
+
+                options.forEach((option) => {
+                    const button = document.createElement("button");
+                    button.textContent = option.toFixed(2);
+                    button.addEventListener("click", () => {
+                        if (option === fraction.value) {
+                            resultText.textContent = "¡Correcto! 🎉";
+                            resultText.style.color = "green";
+                        } else {
+                            resultText.textContent = "Incorrecto 😢";
+                            resultText.style.color = "red";
+                        }
+                    });
+                    optionsDiv.appendChild(button);
+                });
+            }
+
+            newGameButton.addEventListener("click", startGame);
+
+            // Iniciar el juego al cargar la página
+            startGame();
+        });
+    </script>
+</body>
+</html>
+
+
+
